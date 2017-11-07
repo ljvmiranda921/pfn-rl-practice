@@ -4,6 +4,7 @@
 
 import random
 
+
 class EasyEnv(object):
     """An environment where training the agent is very easy"""
 
@@ -19,7 +20,7 @@ class EasyEnv(object):
         self.prev_obs = None
 
     def reset(self):
-        """A method that resets the environment. 
+        """A method that resets the environment.
 
         The return value is a vector that indicates the observation
         reward of the initial state of the environment.
@@ -29,10 +30,10 @@ class EasyEnv(object):
         list
             1-dimensional vector sampled uniformly in the interval [-1,1]
         """
-        self.prev_obs = [random.uniform(-1,1)]
+        self.prev_obs = [random.uniform(-1, 1)]
         self.step_counter = 0
 
-        return self.prev_obs 
+        return self.prev_obs
 
     def obs_dim(self):
         """Returns the number of dimensions of the observation vector
@@ -44,7 +45,7 @@ class EasyEnv(object):
         """
         return 1
 
-    def step(action):
+    def step(self, action):
         """Applies an action to the environment.
 
         Call the previous step’s observation (the component from the
@@ -76,20 +77,13 @@ class EasyEnv(object):
         """
         assert (action in [-1, 1]), 'Invalid input. Must be -1 or 1'
 
-        # Get current state
         current_state = self.prev_obs
-
-        # Compute reward
-        reward = [i * action for i in current_state]
-
-        done = False 
+        reward = action * current_state[0]
+        done = False
         self.step_counter += 1
 
-        if self.step_counter > 10:
+        if self.step_counter > 9:
             done = True
 
-        # Update state
-        self.prev_obs = [random.uniform(-1,1)]
-
-
+        self.prev_obs = [random.uniform(-1, 1)]
         return (self.prev_obs, reward, done)
