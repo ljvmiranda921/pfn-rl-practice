@@ -8,7 +8,14 @@ class EasyEnv(object):
     """An environment where training the agent is very easy"""
 
     def __init__(self):
-        """Initializes the environment"""
+        """Initializes the environment
+
+        Attributes
+        ----------
+        prev_obs : list
+            the previous observation or current state before action is
+            applied
+        """
         self.prev_obs = None
 
     def reset(self):
@@ -19,10 +26,12 @@ class EasyEnv(object):
 
         Returns
         -------
-        list : 1-dimensional vector sampled uniformly in the interval
-               [-1,1]
+        list
+            1-dimensional vector sampled uniformly in the interval [-1,1]
         """
         self.prev_obs = [random.uniform(-1,1)]
+        self.step_counter = 0
+
         return self.prev_obs 
 
     def obs_dim(self):
@@ -55,8 +64,32 @@ class EasyEnv(object):
         -------
         list
             the new observation
-        bool
-            stop signal
         float
             reward signal
+        bool
+            stop signal
+
+        Raises
+        ------
+        AssertionError
+            if input is not -1 or 1.
         """
+        assert (action in [-1, 1]), 'Invalid input. Must be -1 or 1'
+
+        # Get current state
+        current_state = self.prev_obs
+
+        # Compute reward
+        reward = [i * action for i in current_state]
+
+        done = False 
+        self.step_counter += 1
+
+        if self.step_counter > 10:
+            done = True
+
+        # Update state
+        self.prev_obs = [random.uniform(-1,1)]
+
+
+        return (self.prev_obs, reward, done)
