@@ -2,7 +2,9 @@
 
 """Contains all environment classes EasyEnv and CartPoleEnv"""
 
+import sys
 import random
+import subprocess
 
 
 class EasyEnv(object):
@@ -75,15 +77,116 @@ class EasyEnv(object):
         AssertionError
             if input is not -1 or 1.
         """
-        assert (action in [-1, 1]), 'Invalid input. Must be -1 or 1'
+        assert action in [-1, 1], 'Invalid input. Must be -1 or 1'
 
         current_state = self.prev_obs
         reward = action * current_state[0]
-        done = False
         self.step_counter += 1
 
-        if self.step_counter > 9:
-            done = True
-
+        # Obtain next observation
         self.prev_obs = [random.uniform(-1, 1)]
+
+        # Check if episode is done
+        done = True if self.step_counter > 9 else False
+
         return (self.prev_obs, reward, done)
+
+class CartPoleEnv(object):
+    """Environment that interacts with the host program"""
+
+    def __init__(self):
+        """Initializes the environment
+
+        Attributes
+        ----------
+        prev_obs : list
+            the previous observation or current state before action is
+            applied
+        """
+        self.prev_obs = None
+
+    def reset(self):
+        """A method that resets the environment.
+
+        The return value is a vector that indicates the observation
+        reward of the initial state of the environment. This method
+        pipes to :code:`cartpole.out` to send reset instructions and
+        obtains the new observation.
+
+        Returns
+        -------
+        list
+            4-dimensional vector sampled uniformly in the interval [-1,1]
+        """
+        # Set counter
+        self.step_counter = 0
+
+        # Flush reset to stdout
+        print('r')
+        sys.stdout.flush()
+        feedback = input()
+        feedback = feedback.split()
+        self.prev_obs = [float(i) for i in feedback[1:]]
+
+        sys.stderr.write('Reset: {}\n'.format(self.prev_obs))
+
+        return self.prev_obs
+
+    def obs_dim(self):
+        """Returns the number of dimensions of the observation vector
+
+        Returns
+        -------
+        int
+            the number of dimensions in  the observation vector
+        """
+        return 4
+
+    def step(self, action):
+        """Applies an action to the environment
+
+        This method pipes the output of :code:`cartpole.out` to obtain
+        the state. The reward is always 1 and one episode consists of
+        500 steps.
+
+        Parameters
+        ----------
+        action : int
+            the action to be taken. Either -1 or 1.
+
+        Returns
+        -------
+        list
+            the new observation
+        float
+            reward signal, always 1
+        bool
+            stop signal
+
+        Raises
+        ------
+        AssertionError
+            if input is not -1 or 1.
+        """
+        assert action in [-1,1], 'Invalid input. Must be -1 or 1'
+
+        current_state = self.prev_obs
+        reward = 1
+        self.step_counter += 1
+
+        # Obtain next observation
+        print('s {}'.format(action))
+        sys.stdout.flush()
+        feedback = input()
+        feedback = feedback.split()
+        self.prev_obs = [float(i) for i in feedback[1:]]
+
+        # Check if episode is done
+        done = True if (feedback[0]=='done') or (self.step_counter > 499) else False
+
+        return (self.prev_obs, reward, done)
+
+    def terminate(self):
+        """Terminates the host program"""
+        print('q')
+        sys.stdout.flush()
