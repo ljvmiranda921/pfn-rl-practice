@@ -13,18 +13,22 @@ from optimizers import CrossEntropyMethod
 EPISODES = 100
 SAMPLING_RATE = 100
 TOP_SAMPLES = 0.1
+PRINT_STEP = 100
 
 def build_parser():
     parser = ArgumentParser()
     parser.add_argument('-e','--episodes',
                         dest='episodes',help='number of episodes',
                         type=int, default=EPISODES)
-    parser.add_argument('-n', '--sampling-rate',
+    parser.add_argument('-n', '--sampling-size',
                         dest='n', help='no. of samples to generate',
                         type=int, default=SAMPLING_RATE)
     parser.add_argument('-p', '--top-samples',
                         dest='p', help='no. of top samples to take',
                         type=float, default=TOP_SAMPLES)
+    parser.add_argument('-s', '--print-step',
+                        dest='print_step', help='amount of steps to print the output observation',
+                        type=int, default=PRINT_STEP)
     return parser
 
 def noisy_evaluation(model, env, noisy_params):
@@ -86,7 +90,7 @@ def main():
         elite_params = cem.get_elite_parameters(noisy_params,rewards)
         # Update parameters
         params = cem.get_parameter_mean(elite_params)
-        episode_reward = run_episode(model=update_model(model,params), env=env, steps=500, print_step=100)
+        episode_reward = run_episode(model=update_model(model,params), env=env, steps=500, print_step=options.print_step)
         sys.stderr.write('Episode reward: {}\n'.format(episode_reward))
 
         if episode_reward >= 500:
