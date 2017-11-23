@@ -46,20 +46,6 @@ class TestEasyEnv(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.env.step(43892.42)
 
-    def test_done_signal_per_episode(self):
-        """Check if done signal is triggered at the end of the episode"""
-        env = EasyEnv()
-        env.reset()
-
-        for t in range(10):
-            _, _, done = env.step(action=-1)
-            if t != 9:
-                # Must be false within 10 steps
-                self.assertFalse(done)
-
-        # Must be true at the end of the episode
-        self.assertTrue(done)
-
 class TestCartPoleEnv(unittest.TestCase):
 
     def setUp(self):
