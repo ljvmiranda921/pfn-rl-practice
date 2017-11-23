@@ -11,6 +11,11 @@ performing the task, that's why you'll notice some code golfing in my work.
 nor an intern in their company. So please don't take my *unchecked*
 solutions as the official answer in their problem set.
 
+## Dependencies
+
+This repository was tested on both Linux Ubuntu 14.04.5 and Windows 10 (`cygwin`).
+For the basic cartpole, only the Python 3.6.X standard library was implemented.
+
 ## Compiling the host program
 
 The host program contains the cartpole environment and was written in C++.
@@ -69,3 +74,4 @@ Sample output:
 - [] Add a command-line parameter to set a random seed
 - [] Try a neural network model
 - [] Investigate various hyperparameter effects
+- [] Add API Documentation
