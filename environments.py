@@ -118,17 +118,12 @@ class CartPoleEnv(object):
         list
             4-dimensional vector sampled uniformly in the interval [-1,1]
         """
-        # Set counter
-        self.step_counter = 0
-
         # Flush reset to stdout
         print('r')
         sys.stdout.flush()
         feedback = input()
         feedback = feedback.split()
         self.prev_obs = [float(i) for i in feedback[1:]]
-
-        sys.stderr.write('Reset: {}\n'.format(self.prev_obs))
 
         return self.prev_obs
 
@@ -172,7 +167,6 @@ class CartPoleEnv(object):
 
         current_state = self.prev_obs
         reward = 1
-        self.step_counter += 1
 
         # Obtain next observation
         print('s {}'.format(action))
@@ -182,7 +176,7 @@ class CartPoleEnv(object):
         self.prev_obs = [float(i) for i in feedback[1:]]
 
         # Check if episode is done
-        done = True if (feedback[0]=='done') or (self.step_counter > 499) else False
+        done = True if (feedback[0]=='done') else False
 
         return (self.prev_obs, reward, done)
 

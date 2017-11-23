@@ -39,7 +39,7 @@ class LinearModel(object):
         int
             1 if inner product is positive and -1 otherwise
         """
-        assert len(self.params) == len(obs), "Length of two lists aren't the same"
+        assert len(self.params) == len(obs), "Length of two lists aren't the same, {} != {}".format(len(self.params), len(obs))
         inner_prod = sum([x*y for x,y in zip(self.params,obs)])
         sign = lambda k: (k>0) - (k<=0)
         return sign(inner_prod)
