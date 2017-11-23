@@ -71,7 +71,7 @@ Sample output:
 
 ## Todo
 
-- [] Add a command-line parameter to set a random seed
-- [] Try a neural network model
-- [] Investigate various hyperparameter effects
-- [] Add API Documentation
+- Add a command-line parameter to set a random seed
+- Try a neural network model
+- Investigate various hyperparameter effects
+- Add API Documentation
