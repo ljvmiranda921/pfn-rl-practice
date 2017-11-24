@@ -2,6 +2,7 @@
 
 """Agent that interacts with the host program"""
 
+import csv
 import sys
 import random
 from argparse import ArgumentParser
@@ -34,6 +35,9 @@ def build_parser():
     parser.add_argument('-s', '--print-step',
                         dest='print_step', help='amount of steps to print the output observation',
                         type=int, default=PRINT_STEP)
+    parser.add_argument('-o', '--output-file',
+                        dest='output_file', help='file to store win ratio per episode',
+                        required=False)
     parser.add_argument('-r', '--random-seed',
                         dest='random_seed', help='sets the random seed',
                         type=int, default=RANDOM_SEED)
@@ -107,12 +111,22 @@ def main():
         episode_reward = run_episode(model=update_model(model,params), env=env, steps=options.step_size, print_step=options.print_step)
         win_ratio = episode_reward / options.step_size
         sys.stderr.write('Episode reward: {} ({:.2f}%)\n'.format(episode_reward, win_ratio))
+        # Save win_ratio
+        win_ratio_list.append(win_ratio)
 
         if episode_reward >= options.step_size:
             successful_episodes += 1
 
     sys.stderr.write('\nFinal parameters {}'.format(model.params))
     sys.stderr.write('\nRun finished. {} out of {} episodes ({:.2f}%) have a reward of atleast {}\n'.format(successful_episodes, options.episodes, successful_episodes / options.episodes, options.step_size))
+
+    # If output_file is given, write scores to disk
+    if options.output_file:
+        sys.stderr.write('\nWriting scores to file: {}.csv...\n'.format(options.output_file))
+        with open(options.output_file + '.csv', 'w', newline='') as f:
+            wr = csv.writer(f)
+            wr.writerow(win_ratio_list)
+        sys.stderr.write('Done!\n')
 
     # Terminate the host program
     env.terminate()
