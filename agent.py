@@ -15,6 +15,7 @@ SAMPLING_RATE = 100
 TOP_SAMPLES = 0.1
 PRINT_STEP = 100
 RANDOM_SEED = 42
+STEP_SIZE = 500
 
 def build_parser():
     parser = ArgumentParser()
@@ -27,6 +28,9 @@ def build_parser():
     parser.add_argument('-p', '--top-samples',
                         dest='p', help='no. of top samples to take',
                         type=float, default=TOP_SAMPLES)
+    parser.add_argument('-z', '--step-size',
+                        dest='step_size', help='no. of steps for each episode',
+                        type=int, default=STEP_SIZE)
     parser.add_argument('-s', '--print-step',
                         dest='print_step', help='amount of steps to print the output observation',
                         type=int, default=PRINT_STEP)
@@ -35,11 +39,11 @@ def build_parser():
                         type=int, default=RANDOM_SEED)
     return parser
 
-def noisy_evaluation(model, env, noisy_params):
+def noisy_evaluation(model, env, steps, noisy_params):
     """Runs an episode based on the noisy parameters sampled by CEM
     and returns the reward"""
     model = update_model(model, noisy_params)
-    reward = run_episode(model, env, steps=500)
+    reward = run_episode(model, env, steps=steps)
     return reward
 
 def update_model(model, parameters):
@@ -47,7 +51,7 @@ def update_model(model, parameters):
     model.params = parameters
     return model
 
-def run_episode(model, env, steps=500, print_step=False):
+def run_episode(model, env, steps, print_step=False):
     """Runs an episode for a number of steps and returns the total reward"""
     obs = env.reset()
     episode_reward = 0
@@ -56,7 +60,7 @@ def run_episode(model, env, steps=500, print_step=False):
 
         if print_step:
             if s % print_step == 0:
-                sys.stderr.write('Step {}: {}\n'.format(s, obs))
+                sys.stderr.write('Step {} (obs): {}\n'.format(s, obs))
 
         action = model.action(obs)
         obs, reward, done = env.step(action)
@@ -85,6 +89,9 @@ def main():
     # Initialize parameters
     params = model.params
 
+    # Episode scores
+    win_ratio_list = []
+
     successful_episodes = 0
     for i_episode in range(options.episodes):
         sys.stderr.write('\n###### Episode {} of {} ###### \n'.format(i_episode+1, options.episodes))
@@ -92,19 +99,20 @@ def main():
         # Sample N parameter vectors
         noisy_params = cem.sample_parameters(params)
         # Evaluate the sampled vectors
-        rewards = [noisy_evaluation(model, env, i) for i in noisy_params]
+        rewards = [noisy_evaluation(model, env, options.step_size, i) for i in noisy_params]
         # Get elite parameters based on reward
         elite_params = cem.get_elite_parameters(noisy_params,rewards)
         # Update parameters
         params = cem.get_parameter_mean(elite_params)
-        episode_reward = run_episode(model=update_model(model,params), env=env, steps=500, print_step=options.print_step)
-        sys.stderr.write('Episode reward: {}\n'.format(episode_reward))
+        episode_reward = run_episode(model=update_model(model,params), env=env, steps=options.step_size, print_step=options.print_step)
+        win_ratio = episode_reward / options.step_size
+        sys.stderr.write('Episode reward: {} ({:.2f}%)\n'.format(episode_reward, win_ratio))
 
-        if episode_reward >= 500:
+        if episode_reward >= options.step_size:
             successful_episodes += 1
 
     sys.stderr.write('\nFinal parameters {}'.format(model.params))
-    sys.stderr.write('\nRun finished. {} out of {} episodes ({:.2f}%) have a reward of atleast 500\n'.format(successful_episodes, options.episodes, successful_episodes / options.episodes))
+    sys.stderr.write('\nRun finished. {} out of {} episodes ({:.2f}%) have a reward of atleast {}\n'.format(successful_episodes, options.episodes, successful_episodes / options.episodes, options.step_size))
 
     # Terminate the host program
     env.terminate()
