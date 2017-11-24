@@ -117,7 +117,7 @@ def main():
         if episode_reward >= options.step_size:
             successful_episodes += 1
 
-    sys.stderr.write('\nFinal parameters {}'.format(model.params))
+    sys.stderr.write('\nFinal params: {}'.format(model.params))
     sys.stderr.write('\nRun finished. {} out of {} episodes ({:.2f}%) have a reward of atleast {}\n'.format(successful_episodes, options.episodes, successful_episodes / options.episodes, options.step_size))
 
     # If output_file is given, write scores to disk
