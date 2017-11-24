@@ -75,7 +75,23 @@ Sample output:
 
 ![Sample output](./docs/pfn-demo.gif "Cartpole demo")
 
+## Effect of hyperparameters in convergence
+
+Here we can check how adjusting various hyperparameters can affect the
+convergence of our model. The x-axis represents the number of episodes
+(up to 100), while the y-axis shows the reward at the current episode.
+
+Here, the reward is represented as a win ratio, accounting the accumulated
+score per step (default is 500) divided by the total number of steps. So
+for a single episode with 500 steps, if the score obtained is 400, then the
+win ratio is `400 / 500 = 0.2`. I represented the y-axis in this manner to
+standardize the overall reward, especially in the third hyperparameter where
+the actual no. of steps is adjusted.
+
+![Effect of sampling size](./docs/n_val_demo.png "Effect of sampling size")
+![Effect of elite parameter selection](./docs/p_val_demo.png "Effect of elite parameter selection")
+![Effect of step size](./docs/z_val_demo.png "Effect of step size")
+
 ## Todo
 
 - Try using a neural network for policy
-- Investigate various hyperparameter effects
