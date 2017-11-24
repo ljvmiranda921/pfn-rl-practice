@@ -14,6 +14,7 @@ EPISODES = 100
 SAMPLING_RATE = 100
 TOP_SAMPLES = 0.1
 PRINT_STEP = 100
+RANDOM_SEED = 42
 
 def build_parser():
     parser = ArgumentParser()
@@ -29,6 +30,9 @@ def build_parser():
     parser.add_argument('-s', '--print-step',
                         dest='print_step', help='amount of steps to print the output observation',
                         type=int, default=PRINT_STEP)
+    parser.add_argument('-r', '--random-seed',
+                        dest='random_seed', help='sets the random seed',
+                        type=int, default=RANDOM_SEED)
     return parser
 
 def noisy_evaluation(model, env, noisy_params):
@@ -67,6 +71,9 @@ def main():
     # Build parser
     parser = build_parser()
     options = parser.parse_args()
+
+    # Set random seed
+    random.seed(options.random_seed)
 
     # Get CEM methods
     cem = CrossEntropyMethod(N=options.n, p=options.p)
