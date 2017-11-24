@@ -12,7 +12,8 @@ performing the task, that's why you'll notice some code golfing in my work.
 
 **Disclaimer:** I am **not** connected in any way with Preferred Networks
 nor an intern in their company. So please don't take my *unchecked*
-solutions as the official answer in their problem set.
+solutions as the official answer in their problem set. I just wanted to have some beginner
+experience with reinforcement learning and I found their problem set really helpful!
 
 ## Dependencies
 
