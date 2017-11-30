@@ -1,7 +1,8 @@
 # Solutions to PFN Reinforcement Learning Task
 
-[![Build Status](https://travis-ci.org/ljvmiranda921/pfn-rl-practice.svg?branch=master)](https://travis-ci.org/ljvmiranda921/pfn-rl-practice)
 ![python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)
+[![Build Status](https://travis-ci.org/ljvmiranda921/pfn-rl-practice.svg?branch=master)](https://travis-ci.org/ljvmiranda921/pfn-rl-practice)
+[![read blog_post](https://img.shields.io/badge/read-blog_post-brightgreen.svg)](https://ljvmiranda921.github.io/notebook/2017/11/26/a-brief-soiree-with-reinforcement-learning/)
 
 This repository contains my solutions in the Preferred Networks Reinforcement
 Learning problem set. The list of tasks can be found [here](https://github.com/pfnet/intern-coding-tasks/tree/master/2017/ml).
